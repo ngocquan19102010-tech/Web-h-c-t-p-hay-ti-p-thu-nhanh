@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Study Master - Học từ đề cương</title>
+
+<!-- PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs"
+        type="module"></script>
+
+<!-- Mammoth đọc DOCX -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg,#eef4ff,#f8faff);
+    color: #172033;
+}
+
+header {
+    background: linear-gradient(135deg,#2563eb,#7c3aed);
+    color: white;
+    padding: 30px 18px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+header p {
+    margin: 10px 0 0;
+    opacity: .95;
+}
+
+.container {
+    width: 95%;
+    max-width: 1050px;
+    margin: 25px auto;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 35px rgba(30,60,100,.09);
+}
+
+h2 {
+    margin-top: 0;
+}
+
+.mode {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.mode button {
+    border: 0;
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.online {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.offline {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.mode button.active {
+    outline: 3px solid #2563eb;
+}
+
+.info {
+    margin-top: 15px;
+    padding: 14px;
+    border-radius: 10px;
+    background: #eff6ff;
+    border-left: 5px solid #2563eb;
+    line-height: 1.5;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* UPLOAD */
+
+.drop-zone {
+    border: 3px dashed #93c5fd;
+    border-radius: 16px;
+    padding: 35px 15px;
+    text-align: center;
+    background: #eff6ff;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.drop-zone:hover {
+    background: #dbeafe;
+}
+
+.drop-zone .icon {
+    font-size: 50px;
+}
+
+.drop-zone h3 {
+    margin: 10px 0;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-info {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 10px;
+    background: #f1f5f9;
+}
+
+textarea {
+    width: 100%;
+    min-height: 200px;
+    margin-top: 18px;
+    padding: 15px;
+    border: 2px solid #dbe3f0;
+    border-radius: 12px;
+    resize: vertical;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+/* SETTINGS */
+
+.settings {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 15px;
+}
+
+label {
+    font-weight: bold;
+}
+
+select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 7px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.main-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 16px;
+    border: 0;
+    border-radius: 13px;
+    color: white;
+    background: linear-gradient(135deg,#2563eb,#7c3aed);
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.main-btn:hover {
+    opacity: .9;
+}
+
+/* LOADING */
+
+.loading {
+    text-align: center;
+    padding: 20px;
+}
+
+.spinner {
+    width: 42px;
+    height: 42px;
+    margin: auto;
+    border: 5px solid #ddd;
+    border-top: 5px solid #2563eb;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* QUIZ */
+
+.question-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+    color: #64748b;
+}
+
+.progress {
+    height: 10px;
+    background: #e5e7eb;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg,#2563eb,#7c3aed);
+    transition: .3s;
+}
+
+.question {
+    font-size: 21px;
+    font-weight: bold;
+    line-height: 1.6;
+    margin: 25px 0;
+    white-space: pre-line;
+}
+
+.answer {
+    padding: 15px;
+    margin: 10px 0;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    cursor: pointer;
+    line-height: 1.5;
+}
+
+.answer:hover {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+
+.answer.correct {
+    background: #dcfce7;
+    border-color: #16a34a;
+}
+
+.answer.wrong {
+    background: #fee2e2;
+    border-color: #dc2626;
+}
+
+.answer.disabled {
+    pointer-events: none;
+}
+
+.explanation {
+    margin-top: 18px;
+    padding: 16px;
+    background: #fff7ed;
+    border-left: 5px solid #f97316;
+    border-radius: 10px;
+    line-height: 1.6;
+}
+
+.next-btn {
+    margin-top: 20px;
+}
+
+/* RESULT */
+
+.result {
+    text-align: center;
+}
+
+.score {
+    font-size: 48px;
+    color: #2563eb;
+    font-weight: bold;
+    margin: 20px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 8px 15px;
+    border-radius: 999px;
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-weight: bold;
+}
+
+@media(max-width:700px) {
+    .settings {
+        grid-template-columns: 1fr;
+    }
+
+    .question {
+        font-size: 18px;
+    }
+
+    header h1 {
+        font-size: 24px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🧠 AI STUDY MASTER</h1>
+    <p>Tải đề lên → học → luyện câu hỏi → kiểm tra kết quả</p>
+</header>
+
+
+<div class="container">
+
+<!-- ================================================= -->
+<!-- CHỌN CHẾ ĐỘ -->
+<!-- ================================================= -->
+
+<div class="card">
+
+    <h2>1️⃣ Chọn chế độ học</h2>
+
+    <div class="mode">
+
+        <button id="onlineBtn"
+                class="online active"
+                onclick="setMode('online')">
+
+            🟢 ONLINE – AI TẠO CÂU HỎI
+
+        </button>
+
+        <button id="offlineBtn"
+                class="offline"
+                onclick="setMode('offline')">
+
+            🔵 OFFLINE – LẤY CÂU TRONG ĐỀ
+
+        </button>
+
+    </div>
+
+
+    <div id="onlineInfo" class="info">
+
+        <b>🟢 ONLINE</b><br>
+
+        AI sẽ đọc toàn bộ nội dung file, phân tích kiến thức,
+        sau đó tự tạo câu hỏi mới.
+        <br><br>
+
+        <b>Không lấy nguyên câu hỏi có sẵn trong đề.</b>
+
+    </div>
+
+
+    <div id="offlineInfo" class="info hidden">
+
+        <b>🔵 OFFLINE</b><br>
+
+        Hệ thống sẽ tìm trực tiếp các câu hỏi trong file.
+        <br><br>
+
+        Ví dụ file có:
+        <br>
+        <b>Câu 1. Dao động điều hòa là gì?</b>
+        <br>
+        → Web sẽ lấy chính câu hỏi đó để bạn làm.
+        <br><br>
+
+        Nếu file có A/B/C/D và đáp án,
+        hệ thống sẽ giữ lại để chấm điểm.
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- UPLOAD -->
+<!-- ================================================= -->
+
+<div class="card">
+
+    <h2>2️⃣ Tải đề cương / đề bài</h2>
+
+    <label for="fileInput">
+
+        <div class="drop-zone" id="dropZone">
+
+            <div class="icon">📄</div>
+
+            <h3>
+                Nhấn để chọn file hoặc kéo file vào đây
+            </h3>
+
+            <p>
+                Hỗ trợ PDF • DOCX • TXT
+            </p>
+
+        </div>
+
+    </label>
+
+    <input
+        id="fileInput"
+        class="file-input"
+        type="file"
+        accept=".pdf,.docx,.txt">
+
+
+    <div id="fileInfo"
+         class="file-info hidden">
+    </div>
+
+
+    <div id="loading"
+         class="loading hidden">
+
+        <div class="spinner"></div>
+
+        <p id="loadingText">
+            Đang đọc file...
+        </p>
+
+    </div>
+
+
+    <textarea
+        id="documentText"
+        placeholder="Nội dung file sẽ xuất hiện ở đây...">
+    </textarea>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- CÀI ĐẶT -->
+<!-- ================================================= -->
+
+<div class="card">
+
+    <h2>3️⃣ Cài đặt bài luyện</h2>
+
+    <div class="settings">
+
+        <div>
+
+            <label>Số câu</label>
+
+            <select id="questionCount">
+
+                <option value="5">5 câu</option>
+
+                <option value="10"
+                        selected>
+                    10 câu
+                </option>
+
+                <option value="20">
+                    20 câu
+                </option>
+
+                <option value="30">
+                    30 câu
+                </option>
+
+                <option value="50">
+                    50 câu
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div>
+
+            <label>Loại câu hỏi</label>
+
+            <select id="questionType">
+
+                <option value="mix">
+                    🎯 Hỗn hợp
+                </option>
+
+                <option value="mcq">
+                    🔤 Trắc nghiệm
+                </option>
+
+                <option value="tf">
+                    ✅ Đúng / Sai
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div>
+
+            <label>Mức độ</label>
+
+            <select id="difficulty">
+
+                <option value="mix">
+                    🎯 Hỗn hợp
+                </option>
+
+                <option value="easy">
+                    🟢 Nhận biết
+                </option>
+
+                <option value="medium">
+                    🟡 Thông hiểu
+                </option>
+
+                <option value="hard">
+                    🔴 Vận dụng
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="main-btn"
+        onclick="generateQuiz()">
+
+        🚀 BẮT ĐẦU TẠO BÀI
+
+    </button>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- QUIZ -->
+<!-- ================================================= -->
+
+<div id="quizCard"
+     class="card hidden">
+
+    <div class="question-info">
+
+        <span>
+            Câu
+            <b id="questionNumber">1</b>
+            /
+            <b id="totalQuestions">10</b>
+        </span>
+
+        <span>
+            Điểm:
+            <b id="liveScore">0</b>
+        </span>
+
+    </div>
+
+
+    <div class="progress">
+
+        <div
+            id="progressBar"
+            class="progress-bar">
+        </div>
+
+    </div>
+
+
+    <div id="questionText"
+         class="question">
+    </div>
+
+
+    <div id="answers">
+    </div>
+
+
+    <div id="explanation">
+    </div>
+
+
+    <button
+        id="nextButton"
+        class="main-btn next-btn hidden"
+        onclick="nextQuestion()">
+
+        ➡️ CÂU TIẾP THEO
+
+    </button>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- RESULT -->
+<!-- ================================================= -->
+
+<div id="resultCard"
+     class="card result hidden">
+
+    <h2>🎉 HOÀN THÀNH</h2>
+
+    <div
+        id="finalScore"
+        class="score">
+    </div>
+
+    <div
+        id="resultBadge"
+        class="badge">
+    </div>
+
+    <p id="resultMessage"></p>
+
+    <button
+        class="main-btn"
+        onclick="restartQuiz()">
+
+        🔄 LÀM LẠI
+
+    </button>
+
+</div>
+
+</div>
+
+
+<script type="module">
+
+/* ==================================================
+   IMPORT PDF.JS
+================================================== */
+
+import * as pdfjsLib
+from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
+
+
+/* ==================================================
+   BIẾN
+================================================== */
+
+let mode = "online";
+
+let questions = [];
+
+let current = 0;
+
+let score = 0;
+
+
+/* ==================================================
+   DOM
+================================================== */
+
+const fileInput =
+document.getElementById("fileInput");
+
+const documentText =
+document.getElementById("documentText");
+
+const fileInfo =
+document.getElementById("fileInfo");
+
+const dropZone =
+document.getElementById("dropZone");
+
+const loading =
+document.getElementById("loading");
+
+
+/* ==================================================
+   CHUYỂN CHẾ ĐỘ
+================================================== */
+
+window.setMode = function(selected) {
+
+    mode = selected;
+
+    document
+        .getElementById("onlineBtn")
+        .classList.toggle(
+            "active",
+            mode === "online"
+        );
+
+    document
+        .getElementById("offlineBtn")
+        .classList.toggle(
+            "active",
+            mode === "offline"
+        );
+
+    document
+        .getElementById("onlineInfo")
+        .classList.toggle(
+            "hidden",
+            mode !== "online"
+        );
+
+    document
+        .getElementById("offlineInfo")
+        .classList.toggle(
+            "hidden",
+            mode !== "offline"
+        );
+};
+
+
+/* ==================================================
+   FILE INPUT
+================================================== */
+
+fileInput.addEventListener(
+    "change",
+    async function() {
+
+        if (this.files[0]) {
+
+            await processFile(
+                this.files[0]
+            );
+
+        }
+
+    }
+);
+
+
+/* ==================================================
+   KÉO THẢ FILE
+================================================== */
+
+dropZone.addEventListener(
+    "dragover",
+    e => {
+
+        e.preventDefault();
+
+        dropZone.style.background =
+            "#dbeafe";
+
+    }
+);
+
+
+dropZone.addEventListener(
+    "dragleave",
+    () => {
+
+        dropZone.style.background =
+            "#eff6ff";
+
+    }
+);
+
+
+dropZone.addEventListener(
+    "drop",
+    async e => {
+
+        e.preventDefault();
+
+        dropZone.style.background =
+            "#eff6ff";
+
+        const file =
+            e.dataTransfer.files[0];
+
+        if (file) {
+
+            await processFile(file);
+
+        }
+
+    }
+);
+
+
+/* ==================================================
+   ĐỌC FILE
+================================================== */
+
+async function processFile(file) {
+
+    fileInfo.classList.remove(
+        "hidden"
+    );
+
+    fileInfo.innerHTML =
+        `📄 <b>${escapeHTML(file.name)}</b>
+         <br>
+         Dung lượng:
+         ${(file.size / 1024).toFixed(1)}
+         KB`;
+
+    loading.classList.remove(
+        "hidden"
+    );
+
+    documentText.value = "";
+
+    try {
+
+        let text = "";
+
+        const name =
+            file.name.toLowerCase();
+
+        if (name.endsWith(".txt")) {
+
+            text =
+                await file.text();
+
+        }
+
+        else if (name.endsWith(".pdf")) {
+
+            text =
+                await readPDF(file);
+
+        }
+
+        else if (name.endsWith(".docx")) {
+
+            text =
+                await readDOCX(file);
+
+        }
+
+        else {
+
+            throw new Error(
+                "File không được hỗ trợ."
+            );
+
+        }
+
+        documentText.value =
+            cleanText(text);
+
+    }
+
+    catch(error) {
+
+        alert(
+            "Không thể đọc file:\n\n" +
+            error.message
+        );
+
+    }
+
+    finally {
+
+        loading.classList.add(
+            "hidden"
+        );
+
+    }
+}
+
+
+/* ==================================================
+   PDF
+================================================== */
+
+async function readPDF(file) {
+
+    const buffer =
+        await file.arrayBuffer();
+
+    const pdf =
+        await pdfjsLib.getDocument({
+            data: buffer
+        }).promise;
+
+    let result = "";
+
+    for (
+        let page = 1;
+        page <= pdf.numPages;
+        page++
+    ) {
+
+        const p =
+            await pdf.getPage(page);
+
+        const data =
+            await p.getTextContent();
+
+        const text =
+            data.items
+                .map(item => item.str)
+                .join(" ");
+
+        result +=
+            `\n${text}\n`;
+
+    }
+
+    return result;
+}
+
+
+/* ==================================================
+   DOCX
+================================================== */
+
+async function readDOCX(file) {
+
+    const buffer =
+        await file.arrayBuffer();
+
+    const result =
+        await mammoth.extractRawText({
+            arrayBuffer: buffer
+        });
+
+    return result.value;
+}
+
+
+/* ==================================================
+   CLEAN TEXT
+================================================== */
+
+function cleanText(text) {
+
+    return text
+        .replace(/\r/g,"")
+        .replace(/[ \t]+/g," ")
+        .replace(/\n\s*\n\s*\n/g,"\n\n")
+        .trim();
+}
+
+
+/* ==================================================
+   BẮT ĐẦU
+================================================== */
+
+window.generateQuiz =
+async function() {
+
+    const text =
+        documentText.value.trim();
+
+    if (!text) {
+
+        alert(
+            "Bạn chưa tải đề lên."
+        );
+
+        return;
+
+    }
+
+
+    const count =
+        Number(
+            document.getElementById(
+                "questionCount"
+            ).value
+        );
+
+    const type =
+        document.getElementById(
+            "questionType"
+        ).value;
+
+
+    if (mode === "offline") {
+
+        /*
+        OFFLINE:
+        LẤY CÂU HỎI TRỰC TIẾP
+        */
+
+        createOfflineQuiz(
+            text,
+            count
+        );
+
+    }
+
+    else {
+
+        /*
+        ONLINE:
+        AI TẠO CÂU HỎI MỚI
+        */
+
+        await createOnlineQuiz(
+            text,
+            count,
+            type
+        );
+
+    }
+
+};
+
+
+/* ==================================================
+   OFFLINE
+================================================== */
+
+function createOfflineQuiz(
+    text,
+    count
+) {
+
+    const parsed =
+        parseOriginalQuestions(text);
+
+
+    if (
+        parsed.length === 0
+    ) {
+
+        alert(
+            "Không tìm thấy câu hỏi trong đề.\n\n" +
+            "Hệ thống cần các dạng như:\n" +
+            "Câu 1. ...\n" +
+            "Câu 2. ...\n\n" +
+            "và các đáp án A. B. C. D."
+        );
+
+        return;
+
+    }
+
+
+    /*
+    LẤY NGUYÊN CÂU HỎI
+    */
+
+    questions =
+        parsed.slice(
+            0,
+            count
+        );
+
+
+    /*
+    Nếu đề có ít câu hơn số lượng
+    */
+
+    if (
+        questions.length < count
+    ) {
+
+        alert(
+            `File chỉ có ${questions.length} câu hỏi.`
+        );
+
+    }
+
+
+    startQuiz();
+}
+
+
+/* ==================================================
+   PHÂN TÍCH CÂU HỎI GỐC
+================================================== */
+
+function parseOriginalQuestions(text) {
+
+    let result = [];
+
+
+    /*
+    Chuẩn hóa xuống dòng
+    */
+
+    text =
+        text.replace(/\r/g,"");
+
+
+    /*
+    Tìm:
+    Câu 1
+    Câu 2
+    Câu 3...
+    */
+
+    const regex =
+        /(?:^|\n)\s*(?:Câu|Question)\s*(\d+)\s*[:.)-]?\s*([\s\S]*?)(?=\n\s*(?:Câu|Question)\s*\d+\s*[:.)-]?|\s*$)/gi;
+
+
+    const matches =
+        [...text.matchAll(regex)];
+
+
+    for (
+        const match of matches
+    ) {
+
+        let number =
+            match[1];
+
+        let block =
+            match[2].trim();
+
+
+        /*
+        Tách A B C D
+        */
+
+        const optionRegex =
+            /(?:^|\n)\s*([ABCD])\s*[\.\):\-]\s*([\s\S]*?)(?=\n\s*[ABCD]\s*[\.\):\-]|\n\s*(?:Đáp án|ĐA|Answer)|\s*$)/gi;
+
+
+        const options =
+            [];
+
+        const optionMatches =
+            [...block.matchAll(
+                optionRegex
+            )];
+
+
+        for (
+            const om of optionMatches
+        ) {
+
+            options.push(
+                `${om[1]}. ${om[2].trim()}`
+            );
+
+        }
+
+
+        /*
+        Tìm đáp án
+        */
+
+        let answer =
+            null;
+
+
+        const answerMatch =
+            block.match(
+                /(?:Đáp án|ĐA|Answer)\s*[:\-]?\s*([ABCD])/i
+            );
+
+
+        if (
+            answerMatch
+        ) {
+
+            answer =
+                answerMatch[1]
+                    .toUpperCase();
+
+        }
+
+
+        /*
+        Lấy phần câu hỏi
+        */
+
+        let questionText =
+            block;
+
+
+        if (
+            options.length
+        ) {
+
+            const firstOption =
+                block.search(
+                    /(?:^|\n)\s*A\s*[\.\):\-]/i
+                );
+
+            if (
+                firstOption >= 0
+            ) {
+
+                questionText =
+                    block
+                        .substring(
+                            0,
+                            firstOption
+                        )
+                        .trim();
+
+            }
+
+        }
+
+
+        /*
+        Nếu không có đáp án A/B/C/D
+        vẫn giữ câu hỏi
+        */
+
+        if (
+            questionText.length
+        ) {
+
+            let correct =
+                -1;
+
+
+            if (
+                answer
+            ) {
+
+                correct =
+                    ["A","B","C","D"]
+                    .indexOf(answer);
+
+            }
+
+
+            result.push({
+
+                number:
+                    Number(number),
+
+                question:
+                    questionText,
+
+                answers:
+                    options,
+
+                correct:
+                    correct,
+
+                original:
+                    block
+
+            });
+
+        }
+
+    }
+
+
+    return result;
+}
+
+
+/* ==================================================
+   ONLINE
+================================================== */
+
+async function createOnlineQuiz(
+    text,
+    count,
+    type
+) {
+
+    /*
+    ===================================================
+    PHẦN AI API
+    ===================================================
+
+    Bạn cần đưa API của AI vào server.
+
+    AI được yêu cầu:
+
+    1. Đọc toàn bộ đề.
+    2. Hiểu kiến thức.
+    3. Không lấy nguyên câu hỏi trong đề.
+    4. Tự viết câu hỏi mới.
+    5. Bám sát kiến thức trong file.
+    6. Không thêm kiến thức ngoài.
+    7. Tạo A/B/C/D.
+    8. Chỉ có một đáp án đúng.
+    9. Có giải thích.
+
+    JSON AI trả về cần có dạng:
+
+    [
+      {
+        "question": "...",
+        "answers": [
+          "...",
+          "...",
+          "...",
+          "..."
+        ],
+        "correct": 0,
+        "explanation": "..."
+      }
+    ]
+
+    ===================================================
+    */
+
+
+    /*
+    CHƯA CẤU HÌNH API:
+    thông báo để người dùng biết.
+    */
+
+    alert(
+        "🟢 ONLINE đang ở chế độ chờ API AI.\n\n" +
+        "Code đã tách riêng Online và Offline.\n\n" +
+        "Hiện tại chương trình chưa gửi nội dung đề " +
+        "ra AI vì chưa có API/server."
+    );
+
+}
+
+
+/* ==================================================
+   BẮT ĐẦU QUIZ
+================================================== */
+
+function startQuiz() {
+
+    current = 0;
+
+    score = 0;
+
+    document
+        .getElementById(
+            "quizCard"
+        )
+        .classList.remove(
+            "hidden"
+        );
+
+    document
+        .getElementById(
+            "resultCard"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+    document
+        .getElementById(
+            "totalQuestions"
+        )
+        .textContent =
+        questions.length;
+
+    showQuestion();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+/* ==================================================
+   HIỂN THỊ
+================================================== */
+
+function showQuestion() {
+
+    const q =
+        questions[current];
+
+
+    document
+        .getElementById(
+            "questionNumber"
+        )
+        .textContent =
+        current + 1;
+
+
+    document
+        .getElementById(
+            "liveScore"
+        )
+        .textContent =
+        score;
+
+
+    document
+        .getElementById(
+            "progressBar"
+        )
+        .style.width =
+        (
+            (current + 1)
+            /
+            questions.length
+            *
+            100
+        )
+        + "%";
+
+
+    document
+        .getElementById(
+            "questionText"
+        )
+        .textContent =
+        q.question;
+
+
+    const answerBox =
+        document.getElementById(
+            "answers"
+        );
+
+    answerBox.innerHTML = "";
+
+
+    /*
+    CÂU CÓ ĐÁP ÁN
+    */
+
+    if (
+        q.answers &&
+        q.answers.length
+    ) {
+
+        q.answers.forEach(
+            (answer,index) => {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+                div.className =
+                    "answer";
+
+                div.textContent =
+                    answer;
+
+                div.onclick =
+                    () =>
+                    chooseAnswer(index);
+
+                answerBox.appendChild(
+                    div
+                );
+
+            }
+        );
+
+    }
+
+    else {
+
+        answerBox.innerHTML =
+            `
+            <div class="info">
+                ⚠️ Câu này trong đề
+                không có đáp án A/B/C/D.
+                <br><br>
+                Hệ thống vẫn hiển thị nguyên câu
+                để bạn tự làm.
+            </div>
+            `;
+
+    }
+
+
+    document
+        .getElementById(
+            "explanation"
+        )
+        .innerHTML = "";
+
+
+    document
+        .getElementById(
+            "nextButton"
+        )
+        .classList.add(
+            "hidden"
+        );
+}
+
+
+/* ==================================================
+   CHỌN ĐÁP ÁN
+================================================== */
+
+function chooseAnswer(index) {
+
+    const q =
+        questions[current];
+
+
+    const answers =
+        document.querySelectorAll(
+            ".answer"
+        );
+
+
+    answers.forEach(
+        item => {
+
+            item.classList.add(
+                "disabled"
+            );
+
+        }
+    );
+
+
+    /*
+    Đề có đáp án
+    */
+
+    if (
+        q.correct >= 0
+    ) {
+
+        if (
+            index === q.correct
+        ) {
+
+            answers[index]
+                .classList.add(
+                    "correct"
+                );
+
+            score++;
+
+
+            document
+                .getElementById(
+                    "explanation"
+                )
+                .innerHTML =
+                `
+                <div class="explanation">
+                    ✅ <b>Chính xác!</b>
+
+                    <br><br>
+
+                    Đây là đáp án đúng
+                    được lấy từ đề.
+                </div>
+                `;
+
+        }
+
+        else {
+
+            answers[index]
+                .classList.add(
+                    "wrong"
+                );
+
+            answers[q.correct]
+                .classList.add(
+                    "correct"
+                );
+
+
+            document
+                .getElementById(
+                    "explanation"
+                )
+                .innerHTML =
+                `
+                <div class="explanation">
+
+                    ❌ <b>Chưa đúng.</b>
+
+                    <br><br>
+
+                    Đáp án đúng:
+                    <b>
+                    ${escapeHTML(
+                        q.answers[
+                            q.correct
+                        ]
+                    )}
+                    </b>
+
+                    <br><br>
+
+                    Đây là đáp án được
+                    xác định từ phần
+                    đáp án trong file đề.
+
+                </div>
+                `;
+
+        }
+
+    }
+
+    else {
+
+        document
+            .getElementById(
+                "explanation"
+            )
+            .innerHTML =
+            `
+            <div class="explanation">
+
+                ⚠️ File không có
+                đáp án cho câu này.
+
+                <br><br>
+
+                Câu hỏi vẫn được giữ
+                nguyên từ đề.
+
+            </div>
+            `;
+
+    }
+
+
+    document
+        .getElementById(
+            "liveScore"
+        )
+        .textContent =
+        score;
+
+
+    document
+        .getElementById(
+            "nextButton"
+        )
+        .classList.remove(
+            "hidden"
+        );
+}
+
+
+/* ==================================================
+   CÂU TIẾP
+================================================== */
+
+window.nextQuestion =
+function() {
+
+    current++;
+
+
+    if (
+        current >=
+        questions.length
+    ) {
+
+        showResult();
+
+    }
+
+    else {
+
+        showQuestion();
+
+    }
+
+};
+
+
+/* ==================================================
+   KẾT QUẢ
+================================================== */
+
+function showResult() {
+
+    document
+        .getElementById(
+            "quizCard"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+    document
+        .getElementById(
+            "resultCard"
+        )
+        .classList.remove(
+            "hidden"
+        );
+
+
+    const total =
+        questions.length;
+
+
+    const percent =
+        total
+        ?
+        Math.round(
+            score /
+            total *
+            100
+        )
+        :
+        0;
+
+
+    document
+        .getElementById(
+            "finalScore"
+        )
+        .textContent =
+        `${score}/${total}`;
+
+
+    let level;
+
+
+    if (
+        percent >= 90
+    ) {
+
+        level =
+            "🔥 Xuất sắc";
+
+    }
+
+    else if (
+        percent >= 70
+    ) {
+
+        level =
+            "👏 Khá tốt";
+
+    }
+
+    else if (
+        percent >= 50
+    ) {
+
+        level =
+            "📚 Cần ôn thêm";
+
+    }
+
+    else {
+
+        level =
+            "💪 Hãy cố gắng thêm";
+
+    }
+
+
+    document
+        .getElementById(
+            "resultBadge"
+        )
+        .textContent =
+        level;
+
+
+    document
+        .getElementById(
+            "resultMessage"
+        )
+        .textContent =
+        `Bạn đạt ${percent}%. ` +
+        `Hãy xem lại những câu chưa đúng ` +
+        `và thử làm lại.`;
+
+}
+
+
+/* ==================================================
+   LÀM LẠI
+================================================== */
+
+window.restartQuiz =
+function() {
+
+    current = 0;
+
+    score = 0;
+
+    document
+        .getElementById(
+            "resultCard"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+    document
+        .getElementById(
+            "quizCard"
+        )
+        .classList.remove(
+            "hidden"
+        );
+
+    showQuestion();
+
+};
+
+
+/* ==================================================
+   ESCAPE HTML
+================================================== */
+
+function escapeHTML(text) {
+
+    return String(text)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+</script>
+
+</body>
+</html>
